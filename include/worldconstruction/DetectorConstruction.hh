@@ -18,7 +18,10 @@ public:
 
     virtual G4VPhysicalVolume* Construct() override;//override关键字表示该方法重写了基类中的虚函数Construct，确保编译器检查函数签名是否正确匹配基类中的虚函数
 
-public:
+    /// Returns the shared logical volume of the 3 sample cylinders.
+    /// Valid only after Construct() has been called.
+    G4LogicalVolume* GetSampleLV() const { return fSampleLV; }
+
     G4double fWorldSizeX;
     G4double fWorldSizeY;
     G4double fWorldSizeZ;
@@ -27,6 +30,8 @@ public:
     G4VPhysicalVolume* physWorld;
     G4LogicalVolume* logicWorld;
     G4Box* solidWorld;
+
+    G4LogicalVolume* fSampleLV = nullptr;
 
 private:
     void DefineMaterials();

@@ -76,9 +76,9 @@ int main(int argc,char** argv)
   // 🔹 物理列表 + 探测器 + 动作初始化
   // ==============================================
     auto physicsList = new FTFP_BERT_HP();
-    DetectorConstruction* det = new DetectorConstruction;
+    auto det = new DetectorConstruction();
     runManager->SetUserInitialization(physicsList);
-    runManager->SetUserInitialization(new DetectorConstruction());
+    runManager->SetUserInitialization(det);
     runManager->SetUserInitialization(new ActionInitialization(det));
 
   // ==============================================

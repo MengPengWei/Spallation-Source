@@ -37,6 +37,8 @@ file(GLOB_RECURSE SS_SOURCES
 add_executable(SS_V0_1_1 SS_V0_1_1.cc ${SS_SOURCES})
 
 target_compile_features(SS_V0_1_1 PRIVATE cxx_std_17)
+# ${Geant4_LIBRARIES} already includes G4analysis (g4root) when Geant4 was
+# built with ROOT support – no extra find_package call is required.
 target_link_libraries(SS_V0_1_1 PRIVATE ${Geant4_LIBRARIES})
 
 # 复制宏文件

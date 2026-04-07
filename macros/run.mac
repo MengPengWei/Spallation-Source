@@ -1,7 +1,16 @@
+# Default run macro – shoots neutrons at the capsule assembly and records
+# boundary crossings into the 3 sample cylinders via SteppingAction -> g4root.
+
 /run/initialize
-/control/verbose 0
+
+# Neutron gun aimed along +Z, starting outside the capsule (z = -40 mm)
+/gun/particle neutron
+/gun/energy 1 MeV
+/gun/position 0 0 -40 mm
+/gun/direction 0 0 1
+
 /run/verbose 0
-/run/beamOn 100000000
+/event/verbose 0
 
-
-
+# 1000 primary neutrons – enough to test recording without long wait
+/run/beamOn 1000

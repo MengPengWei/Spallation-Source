@@ -1,5 +1,6 @@
 #include "DetectorConstruction.hh"
 #include "DetectorConstructionManager.hh"
+#include "ActivationFoilBuilder.hh"
 #include "Constants.hh"
 
 // 构造函数
@@ -69,5 +70,11 @@ G4VPhysicalVolume* DetectorConstruction::ConstructWorld()
 // Geant4 主构造接口
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
-    return ConstructWorld();
+    auto worldPV = ConstructWorld();
+
+    // Build capsule + inner cavity + 3 sample cylinders at origin
+    ActivationFoilBuilder builder;
+    fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, 0));
+
+    return worldPV;
 }
