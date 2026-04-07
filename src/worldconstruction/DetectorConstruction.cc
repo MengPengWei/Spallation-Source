@@ -8,9 +8,9 @@ DetectorConstruction::DetectorConstruction()
     : G4VUserDetectorConstruction()
 {
     // 从常量读取世界尺寸
-    fWorldSizeX = C_WordSizeX;
-    fWorldSizeY = C_WordSizeY;
-    fWorldSizeZ = C_WordSizeZ;
+    fWorldSizeX = C_WorldSizeX;
+    fWorldSizeY = C_WorldSizeY;
+    fWorldSizeZ = C_WorldSizeZ;
 
     // 定义材料
     DefineMaterials();

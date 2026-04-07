@@ -1,9 +1,20 @@
 #include "RunAction.hh"
+#include "Run.hh"
+
 #include "G4Run.hh"
 #include "G4RootAnalysisManager.hh"
 
 RunAction::RunAction() = default;
 RunAction::~RunAction() = default;
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4Run* RunAction::GenerateRun()
+{
+    return new Run();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void RunAction::BeginOfRunAction(const G4Run*)
 {
@@ -77,9 +88,16 @@ void RunAction::BeginOfRunAction(const G4Run*)
     man->FinishNtuple(3);
 }
 
-void RunAction::EndOfRunAction(const G4Run*)
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void RunAction::EndOfRunAction(const G4Run* run)
 {
+    // Write ROOT file
     auto man = G4RootAnalysisManager::Instance();
     man->Write();
     man->CloseFile();
+
+    // Print rdecay02-style run summary to console
+    const Run* theRun = static_cast<const Run*>(run);
+    theRun->EndOfRun();
 }

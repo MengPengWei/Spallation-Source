@@ -9,9 +9,9 @@
 // -----------------------------------------------------------------------
 // 几何尺寸常量
 // -----------------------------------------------------------------------
-constexpr G4double C_WordSizeX= 10.0*m;
-constexpr G4double C_WordSizeY= 10.0*m;
-constexpr G4double C_WordSizeZ= 10.0*m;
+constexpr G4double C_WorldSizeX = 10.0*m;
+constexpr G4double C_WorldSizeY = 10.0*m;
+constexpr G4double C_WorldSizeZ = 10.0*m;
 
 // 有关活化片的物理量：胶囊、内腔、样品
 constexpr G4double C_CapsuleOuterRadius = 13.0*mm; // 胶囊外半径

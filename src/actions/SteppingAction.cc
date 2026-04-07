@@ -1,6 +1,7 @@
 #include "SteppingAction.hh"
 #include "EventAction.hh"
 #include "DetectorConstruction.hh"
+#include "Run.hh"
 
 #include "G4Step.hh"
 #include "G4Track.hh"
@@ -25,32 +26,48 @@ SteppingAction::~SteppingAction() = default;
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
     if (!step) return;
-
-    // Only track neutrons
     auto track = step->GetTrack();
     if (!track) return;
-    if (track->GetParticleDefinition()->GetParticleName() != "neutron") return;
 
-    // Retrieve sample logical volume (set after Construct())
     G4LogicalVolume* sampleLV = fDetector->GetSampleLV();
     if (!sampleLV) return;
 
     const G4StepPoint* pre  = step->GetPreStepPoint();
     const G4StepPoint* post = step->GetPostStepPoint();
 
-    // Guard against missing volumes (e.g., world boundary)
-    auto preVol  = pre->GetTouchableHandle()->GetVolume();
+    // Guard against missing volumes (e.g. world boundary exit)
+    auto preVol = pre->GetTouchableHandle()->GetVolume();
     if (!preVol) return;
     G4LogicalVolume* preLV = preVol->GetLogicalVolume();
 
-    // Current step is inside the sample if pre-point LV == sampleLV
     bool inSample = (preLV == sampleLV);
 
     // ------------------------------------------------------------------
-    // Case A: neutron just entered the sample (boundary crossing)
+    // Run-level statistics: accumulate for ALL particles inside sample.
+    // ------------------------------------------------------------------
+    if (inSample) {
+        Run* run = static_cast<Run*>(
+            G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+        if (run) {
+            run->CountProcesses(post->GetProcessDefinedStep());
+            run->AddEdep(step->GetTotalEnergyDeposit());
+        }
+
+        // Per-event per-sample edep accumulation (for EventSummary ntuple)
+        G4int copyNo = pre->GetTouchableHandle()->GetCopyNumber();
+        fEvent->AddEdep(copyNo, step->GetTotalEnergyDeposit());
+    }
+
+    // ------------------------------------------------------------------
+    // Neutron-specific detailed ntuple recording.
+    // ------------------------------------------------------------------
+    if (track->GetParticleDefinition()->GetParticleName() != "neutron") return;
+
+    // ------------------------------------------------------------------
+    // Case A: neutron just entered a sample (boundary crossing)
     // ------------------------------------------------------------------
     if (pre->GetStepStatus() == fGeomBoundary && inSample) {
-        G4int copyNo = pre->GetTouchableHandle()->GetCopyNumber();
+        G4int copyNo  = pre->GetTouchableHandle()->GetCopyNumber();
         G4int eventId = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
 
         G4ThreeVector pos = pre->GetPosition();
@@ -73,8 +90,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     }
 
     // ------------------------------------------------------------------
-    // Case B: neutron is in the sample and undergoes a physics process
-    //         (anything other than Transportation)
+    // Case B: neutron in sample undergoes a non-Transport physics process
     // ------------------------------------------------------------------
     if (inSample) {
         const G4VProcess* process = post->GetProcessDefinedStep();
@@ -108,8 +124,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         man->AddNtupleRow(1);
 
         fEvent->AddInteraction(copyNo);
-        fEvent->AddEdep(copyNo, edep);
-        // Geant4 neutron-capture process name is "nCapture"
+        // Geant4 neutron-capture process name contains "Capture"
         if (procName.find("Capture") != std::string::npos)
             fEvent->AddCapture(copyNo);
 
