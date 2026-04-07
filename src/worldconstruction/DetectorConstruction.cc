@@ -42,7 +42,7 @@ void DetectorConstruction::DefineMaterials()
 G4VPhysicalVolume* DetectorConstruction::ConstructWorld()
 {
     // 世界立方体
-    solidWorld = new G4Box("World",
+    solidWorld = new G4Box(kWorldName,
                         fWorldSizeX / 2,
                         fWorldSizeY / 2,
                         fWorldSizeZ / 2);
@@ -50,14 +50,14 @@ G4VPhysicalVolume* DetectorConstruction::ConstructWorld()
     // 逻辑体
     logicWorld = new G4LogicalVolume(solidWorld,
                                     WorldMat,
-                                    "World");
+                                    kWorldName);
 
     // 物理体放置
     physWorld = new G4PVPlacement(
         0,                      // 旋转
         G4ThreeVector(0,0,0),   // 位置
         logicWorld,             // 逻辑体
-        "World",            // 名称
+        kWorldName,             // 名称
         0,                      // 母体积
         false,                  // 无布尔操作
         0,                      // 复制编号
