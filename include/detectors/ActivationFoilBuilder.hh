@@ -16,7 +16,7 @@ public:
     /// Build and place the full capsule assembly into motherLV at pos.
     /// Returns the shared sample logical volume (all 3 cylinders use same LV).
     G4LogicalVolume* Build(G4LogicalVolume* motherLV,
-                           const G4ThreeVector& pos = G4ThreeVector(0,0,0));
+                            const G4ThreeVector& pos = G4ThreeVector(0,0,0));//建立并放置完整的胶囊组件到母体积中，位置为pos。返回共享的样品逻辑体（所有3个圆柱体使用相同的LV）。
 
     G4LogicalVolume* GetSampleLV() const { return fSampleLV; }
 

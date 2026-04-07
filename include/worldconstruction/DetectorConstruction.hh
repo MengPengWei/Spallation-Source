@@ -21,6 +21,7 @@ public:
     /// Returns the shared logical volume of the 3 sample cylinders.
     /// Valid only after Construct() has been called.
     G4LogicalVolume* GetSampleLV() const { return fSampleLV; }
+    G4LogicalVolume* GetWorldLV() const { return logicWorld; }
 
     G4double fWorldSizeX;
     G4double fWorldSizeY;

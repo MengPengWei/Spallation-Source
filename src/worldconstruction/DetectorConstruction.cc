@@ -73,8 +73,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     auto worldPV = ConstructWorld();
 
     // Build capsule + inner cavity + 3 sample cylinders at origin
-    ActivationFoilBuilder builder;
-    fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, 0));
+    ActivationFoilBuilder builder;//创建一个ActivationFoilBuilder对象，用于构建胶囊组件。
+    fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, 0));//将胶囊组件构建并放置在世界逻辑体的原点位置，并将返回的样品逻辑体指针保存到成员变量fSampleLV中，以便后续使用。
+
+
 
     return worldPV;
 }
