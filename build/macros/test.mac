@@ -1,5 +1,0 @@
-
-/run/initialize
-/control/verbose 0
-/run/verbose 0
-/run/beamOn 100000

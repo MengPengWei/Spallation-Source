@@ -2,6 +2,10 @@
 #include "DetectorConstructionManager.hh"
 #include "ActivationFoilBuilder.hh"
 #include "Constants.hh"
+#include "FissionBuilder.hh"
+
+#include "CssConstants.hh"
+#include "ComptonSuppressionSystem.hh"
 
 // 构造函数
 DetectorConstruction::DetectorConstruction()
@@ -73,10 +77,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     auto worldPV = ConstructWorld();
 
     // Build capsule + inner cavity + 3 sample cylinders at origin
-    ActivationFoilBuilder builder;//创建一个ActivationFoilBuilder对象，用于构建胶囊组件。
-    fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, 0));//将胶囊组件构建并放置在世界逻辑体的原点位置，并将返回的样品逻辑体指针保存到成员变量fSampleLV中，以便后续使用。
+    if(isAFB)
+    {
+        ActivationFoilBuilder builder;//创建一个ActivationFoilBuilder对象，用于构建胶囊组件。
+        fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, 0));//将胶囊组件构建并放置在世界逻辑体的原点位置，并将返回的样品逻辑体指针保存到成员变量fSampleLV中，以便后续使用。
 
-
+    }
+    if(isFB)
+    {
+        FissionBuilder builder;
+        fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, 0));
+    }
+    if(isCSS)
+    {
+        ComptonSuppressionSystem builder;
+        fSampleLV = builder.Build(logicWorld, G4ThreeVector(0, 0, -1*m));
+    }
 
     return worldPV;
 }

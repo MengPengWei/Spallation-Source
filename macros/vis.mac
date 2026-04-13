@@ -23,18 +23,19 @@
 /vis/drawVolume
 #
 # Specify view angle:
-#/vis/viewer/set/viewpointThetaPhi 90. 0.
 #
-# Specify zoom value:
-/vis/viewer/zoom 1.4
-#
-# Specify style (surface or wireframe):
-/vis/viewer/set/style surface
+# Specify style (surface or wireframe or c):
+/vis/viewer/set/style c  
 # To get nice view
-#/vis/geometry/set/visibility World 0 false
+/vis/geometry/set/visibility World 0 false
 #
 # Draw coordinate axes:
 #/vis/scene/add/axes 0 0 0 1 m
+/vis/viewer/set/viewpointThetaPhi 60. 45.
+/vis/viewer/zoom 1.4
+
+
+
 #
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:
