@@ -4,6 +4,8 @@
 #include "G4UserEventAction.hh"
 #include "G4Types.hh"
 #include "Constants.hh"
+#include "AfConstants.hh"
+#include "CssConstants.hh"
 
 class RunAction;
 
@@ -31,7 +33,7 @@ public:
     void AddEdep(G4int copyNo, G4double de);
 
 private:
-    SampleAccum fSamples[C_NSamples]; // indexed by sample copy number
+
 };
 
 #endif

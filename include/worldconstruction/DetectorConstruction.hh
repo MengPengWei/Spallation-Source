@@ -20,19 +20,15 @@ public:
 
     /// Returns the shared logical volume of the 3 sample cylinders.
     /// Valid only after Construct() has been called.
-    G4LogicalVolume* GetSampleLV() const { return fSampleLV; }
-    G4LogicalVolume* GetWorldLV() const { return logicWorld; }
+    G4LogicalVolume* Get_LV_Detector() const { return LV_Detector; }
+    G4LogicalVolume* Get_LV_World() const { return LV_World; }
 
-    G4double fWorldSizeX;
-    G4double fWorldSizeY;
-    G4double fWorldSizeZ;
+    G4Material* Mat_World;
+    G4VPhysicalVolume* PV_World;
+    G4LogicalVolume* LV_World;
+    G4Box* SV_World;
 
-    G4Material* WorldMat;
-    G4VPhysicalVolume* physWorld;
-    G4LogicalVolume* logicWorld;
-    G4Box* solidWorld;
-
-    G4LogicalVolume* fSampleLV = nullptr;
+    G4LogicalVolume* LV_Detector = nullptr;
 
 private:
     void DefineMaterials();

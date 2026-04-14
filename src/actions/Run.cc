@@ -1,8 +1,10 @@
 #include "Run.hh"
 #include "Constants.hh"
+#include "CssConstants.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
+
 
 #include <iomanip>
 
@@ -125,10 +127,6 @@ void Run::EndOfRun() const
     G4double meanEd2  = fEdep2 / nEvents;
     G4double rms = meanEd2 - meanEdep * meanEdep;
     rms = (rms > 0.) ? std::sqrt(rms) : 0.;
-
-    G4cout << "\n Mean energy deposit in sample volumes (all " << C_NSamples << ", per event)"
-           << " = " << G4BestUnit(meanEdep, "Energy")
-           << ";  rms = " << G4BestUnit(rms, "Energy") << "\n";
 
     // ---------------------------------------------------------------
     // Process call frequency

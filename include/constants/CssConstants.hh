@@ -3,7 +3,9 @@
 
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"  
 
+#include "G4VisAttributes.hh"
 //=============================================================
 // 反康普顿系统 CSS 几何参数
 // 由内向外：HPGe → 铝壳 → BGO阵列 → 铅屏蔽体 → 铅准直器
@@ -14,54 +16,70 @@
 // ========================
 // 1) HPGe 晶体（中心）
 // ========================
-constexpr G4double C_HPGe_OutD = 63.1*mm;
-constexpr G4double C_HPGe_L   = 63.0*mm;
+constexpr G4double C_CSS_HPGe_OutD = 63.1*mm;
+constexpr G4double C_CSS_HPGe_L   = 63.0*mm;
 
 // ========================
 // 2) 铝层 (包裹 HPGe)
 // ========================
-constexpr G4double C_Al_T     = 3.0*mm;    // 铝层厚度（合理厚度）
-constexpr G4double C_Al_InD   = C_HPGe_OutD;
-constexpr G4double C_Al_OutD  = C_Al_InD + 2*C_Al_T;
-constexpr G4double C_Al_L     = 100.0*mm;   // 长度包裹HPGe
+constexpr G4double C_CSS_Al_T     = 3.0*mm;    // 铝层厚度（合理厚度）
+constexpr G4double C_CSS_Al_InD   = C_CSS_HPGe_OutD;
+constexpr G4double C_CSS_Al_OutD  = C_CSS_Al_InD + 2*C_CSS_Al_T;
+constexpr G4double C_CSS_Al_L     = 100.0*mm;   // 长度包裹HPGe
 
 // ========================
 // 3) BGO 8瓣扇形探测器
 // ========================
-constexpr G4int    C_BGONumber  = 8;
-constexpr G4double C_BGO_T      = 40.0*mm;   // BGO径向厚度
-constexpr G4double C_BGO_InD    = C_Al_OutD;
-constexpr G4double C_BGO_OutD   = C_BGO_InD + 2*C_BGO_T;
-constexpr G4double C_BGO_L      = 100.0*mm;
-constexpr G4double C_BGOAngle   = 360.0*deg / C_BGONumber;
+constexpr G4int    C_CSS_BGO_n = 8;
+constexpr G4double C_CSS_BGO_T      = 40.0*mm;   // BGO径向厚度
+constexpr G4double C_CSS_BGO_InD    = C_CSS_Al_OutD;
+constexpr G4double C_CSS_BGO_OutD   = C_CSS_BGO_InD + 2*C_CSS_BGO_T;
+constexpr G4double C_CSS_BGO_L      = 100.0*mm;
+constexpr G4double C_CSS_BGO_Angle   = 360.0*deg / C_CSS_BGO_n;
 
 // ========================
 // 4) 准直器 (最前端 +Z)
 // ========================
-constexpr G4double C_Collimator_InD  = 31.0*mm;  // 小孔
-constexpr G4double C_Collimator_OutD = C_BGO_OutD;
-constexpr G4double C_Collimator_L    = 127.0*mm;
+constexpr G4double C_CSS_Collimator_InD  = 31.0*mm;  // 小孔
+constexpr G4double C_CSS_Collimator_OutD = C_CSS_BGO_OutD;
+constexpr G4double C_CSS_Collimator_L    = 127.0*mm;
 
 // ========================
 // 5) 铅屏蔽体 (后端)
 // ========================
-constexpr G4double C_Shield_InD   = C_BGO_OutD;
-constexpr G4double C_Shield_OutD   = C_Shield_InD + 100*mm;
-constexpr G4double C_Shield_L      = C_Collimator_L+C_BGO_L+20*mm; // 足够包裹BGO和准直器
+constexpr G4double C_CSS_Shield_InD   = C_CSS_BGO_OutD;
+constexpr G4double C_CSS_Shield_OutD   = C_CSS_Shield_InD + 100*mm;
+constexpr G4double C_CSS_Shield_L      = C_CSS_Collimator_L+C_CSS_BGO_L+20*mm; // 足够包裹BGO和准直器
 
 // ========================
 // 6) CSS 总外壳
 // ========================
-constexpr G4double C_CSS_D = C_Shield_OutD;
-constexpr G4double C_CSS_L = C_Shield_L;
+constexpr G4double C_CSS_D = C_CSS_Shield_OutD;
+constexpr G4double C_CSS_L = C_CSS_Shield_L;
 
 // ========================
-// 🎯 Z 轴位置（完全对齐，零重叠）
 // ========================
-const G4ThreeVector pos_CSS_Collimator (0, 0,  C_CSS_L/2 - C_Collimator_L/2);
-const G4ThreeVector pos_CSS_BGO       (0, 0,  pos_CSS_Collimator.z() - C_Collimator_L/2 - C_BGO_L/2);
-const G4ThreeVector pos_CSS_Al         (0, 0,  pos_CSS_BGO.z());
-const G4ThreeVector pos_CSS_HPGe       (0, 0,  pos_CSS_BGO.z());
-const G4ThreeVector pos_CSS_Shield     (0, 0, 0);
+const G4ThreeVector C_CSS_Collimator_Pos (0, 0,  C_CSS_L/2 - C_CSS_Collimator_L/2);
+const G4ThreeVector C_CSS_BGO_Pos       (0, 0,  C_CSS_Collimator_Pos.z() - C_CSS_Collimator_L/2 - C_CSS_BGO_L/2);
+const G4ThreeVector C_CSS_Al_Pos         (0, 0,  C_CSS_BGO_Pos.z());
+const G4ThreeVector C_CSS_HPGe_Pos       (0, 0,  C_CSS_BGO_Pos.z());
+const G4ThreeVector C_CSS_Shield_Pos     (0, 0, 0);
+
+//整体系统坐标,位于x轴方向，距离世界坐标原点1m处，方
+
+
+
+//可视化
+namespace CSS_Vis
+{
+    inline static G4VisAttributes* C_CSS_Vis = new G4VisAttributes(G4Colour(0.0, 0, 0.0, 1)); // CSS系统设置为黑色
+    inline static G4VisAttributes* C_CSS_BGO_Vis = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 1.0)); // BGO探测器设置为绿色
+    inline static G4VisAttributes* C_CSS_Al_Vis = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0, 1.0)); // 铝层设置为红色
+    inline static G4VisAttributes* C_CSS_HPGe_Vis = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0, 1.0)); // HPGe探测器设置为蓝色
+    inline static G4VisAttributes* C_CSS_Shield_Vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 1.0)); // 屏蔽体设置为灰色
+    inline static G4VisAttributes* C_CSS_Collimator_Vis = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0, 1.0)); // 准直器设置为黄色
+} 
+using namespace CSS_Vis;
+    
 
 #endif
