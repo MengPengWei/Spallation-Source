@@ -6,6 +6,7 @@
 
 #include "CssConstants.hh"
 #include "ComptonSuppressionSystem.hh"
+#include "TantalumTarget.hh"
 
 // 构造函数
 DetectorConstruction::DetectorConstruction()
@@ -87,6 +88,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     {
         ComptonSuppressionSystem CSS_BD;
         CSS_BD.Build(LV_World,C_CSS_Pos);
+    }
+
+    if(is_TT)
+    {
+        TantalumTarget TT_BD;
+        TT_BD.Build(LV_World, C_TT_Pos);
     }
 
     return PV_World;
