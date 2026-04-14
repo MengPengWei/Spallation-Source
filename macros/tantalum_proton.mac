@@ -1,0 +1,31 @@
+# tantalum_proton.mac – 钽靶 + 70 MeV 均匀质子束照射运行宏
+#
+# 前提：编译时需在 include/constants/Constants.hh 中设置
+#         constexpr G4bool is_TT = true;
+#       然后重新编译：
+#         mkdir build && cd build && cmake .. && make -j$(nproc)
+#
+# 运行方式：
+#   ./SS_V0_1_1 -m macros/tantalum_proton.mac
+#
+# 几何（is_TT=true 时自动构建，参数见 include/constants/TtConstants.hh）：
+#   TT_Water   – 冷却水外筒  R=25 mm, HalfL=55 mm  (G4_WATER)
+#   TT_Clad    – SS316L 包壳 R=22 mm, HalfL=52 mm  (G4_STAINLESS-STEEL)
+#   TT_Target  – 钽靶芯      R=20 mm, HalfL=50 mm  (G4_Ta)
+#
+# 束流（is_TT=true 时自动切换）：
+#   粒子:  proton
+#   动能:  70 MeV
+#   分布:  均匀圆面，半径 18 mm（< 靶半径 20 mm）
+#   方向:  沿 +Z 轴
+#   起点:  z = -(55+1) = -56 mm（靶面入口前方 1 mm）
+#   强度:  由 /run/beamOn 控制模拟事件数；
+#          实际物理强度约 1e13 p/s（请在后处理中按权重换算）
+
+/run/initialize
+
+/run/verbose 1
+/event/verbose 0
+
+# 发射 1000 个初级质子（快速验证；正式统计建议 ≥1e5）
+/run/beamOn 1000
