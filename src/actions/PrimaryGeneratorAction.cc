@@ -2,6 +2,7 @@
 #include "Run.hh"
 #include "Constants.hh"
 #include "TtConstants.hh"
+#include "PgConstants.hh"
 
 #include "G4ParticleTable.hh"
 #include "G4RunManager.hh"
@@ -18,44 +19,39 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
     if (is_TT)
     {
-        // ----------------------------------------------------------------
-        // 钽靶模式：70 MeV 均匀质子束，沿 +Z 方向入射
-        // 束流圆心位于靶面入口前方 1 mm 处（z = C_TT_Pos.z - C_TT_Water_HalfL - 1 mm）
-        // 均匀分布半径：C_TT_Beam_Radius（见 TtConstants.hh，单位 mm）
-        // 束流强度：由宏文件中的 /run/beamOn 控制事件数；
-        //   实际物理强度请在宏/分析中结合粒子权重（particles/s）换算，
-        //   典型参考值：1e13 p/s
-        // ----------------------------------------------------------------
         G4ParticleDefinition* proton =
             G4ParticleTable::GetParticleTable()->FindParticle("proton");
         fParticleGun->SetParticleDefinition(proton);
-        fParticleGun->SetParticleEnergy(C_TT_Beam_Energy);  // 70 MeV
 
-        G4double beamZ = C_TT_Pos.z() - C_TT_Water_HalfL - 1.0*mm;
-        fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., beamZ));
-        fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+        // 改用 PgConstants.hh
+        fParticleGun->SetParticleEnergy(C_PG_Energy);
+        fParticleGun->SetParticleMomentumDirection(C_PG_Direction);
+        fParticleGun->SetParticlePosition(
+            G4ThreeVector(C_PG_Center_X, C_PG_Center_Y, C_PG_Position_Z));
 
-        fBeamRadius = C_TT_Beam_Radius;  // 均匀圆面分布半径
+        // TT 模式下不再用均匀圆束
+        fBeamRadius = 0.0;
 
-        G4cout << "\n[PrimaryGeneratorAction] 钽靶模式已激活" << G4endl;
+        G4cout << "\n[PrimaryGeneratorAction] TT(PG) 模式已激活" << G4endl;
         G4cout << "  粒子:   proton" << G4endl;
-        G4cout << "  动能:   " << C_TT_Beam_Energy/MeV << " MeV" << G4endl;
-        G4cout << "  起始Z:  " << beamZ/mm << " mm" << G4endl;
-        G4cout << "  束流半径(均匀圆面): " << fBeamRadius/mm << " mm\n" << G4endl;
+        G4cout << "  动能:   " << C_PG_Energy/MeV << " MeV" << G4endl;
+        G4cout << "  束斑中心: (" << C_PG_Center_X/mm << ", "
+                                << C_PG_Center_Y/mm << ") mm" << G4endl;
+        G4cout << "  起始Z:  " << C_PG_Position_Z/mm << " mm" << G4endl;
+        G4cout << "  分布:   2D Gaussian (FWHM=" << C_PG_FWHM/mm
+               << " mm) truncated in square halfSide=" << C_PG_HalfSide/mm
+               << " mm\n" << G4endl;
     }
     else
     {
-        // ----------------------------------------------------------------
-        // 默认中子束流（活化片照射）
-        // ----------------------------------------------------------------
+        // 默认中子束流（保留你原来的）
         G4ParticleDefinition* neutron =
             G4ParticleTable::GetParticleTable()->FindParticle("neutron");
         fParticleGun->SetParticleDefinition(neutron);
         fParticleGun->SetParticleEnergy(1.0 * MeV);
         fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -40.*mm));
         fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
-
-        fBeamRadius = 0.0;  // 点源
+        fBeamRadius = 0.0;
     }
 }
 
@@ -66,24 +62,54 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
-    // 均匀圆形横向分布：在半径 fBeamRadius 内对 (x, y) 做均匀采样
-    // 采用极坐标拒绝采样（等效：r = R*sqrt(U) 可保证面积均匀分布）
-    if (fBeamRadius > 0.)
+    if (is_TT)
     {
-        G4double r   = fBeamRadius * std::sqrt(G4UniformRand());
-        G4double phi = CLHEP::twopi * G4UniformRand();
-        G4ThreeVector center = fParticleGun->GetParticlePosition();
-        fParticleGun->SetParticlePosition(
-            G4ThreeVector(r * std::cos(phi), r * std::sin(phi), center.z()));
+        const G4double halfSide = C_PG_HalfSide;
+        const G4double sigma    = C_PG_FWHM / 2.35482;
+
+        G4double x_rel = 0.0;
+        G4double y_rel = 0.0;
+
+        // 拒绝采样，确保落入方形范围
+        while (true)
+        {
+            const G4double u1 = G4UniformRand();
+            const G4double u2 = G4UniformRand();
+            const G4double u3 = G4UniformRand();
+            const G4double u4 = G4UniformRand();
+
+            x_rel = sigma * std::sqrt(-2.0 * std::log(u1)) * std::cos(CLHEP::twopi * u2);
+            y_rel = sigma * std::sqrt(-2.0 * std::log(u3)) * std::cos(CLHEP::twopi * u4);
+
+            if (std::fabs(x_rel) <= halfSide && std::fabs(y_rel) <= halfSide)
+                break;
+        }
+
+        const G4double x0 = C_PG_Center_X + x_rel;
+        const G4double y0 = C_PG_Center_Y + y_rel;
+        const G4double z0 = C_PG_Position_Z;
+
+        fParticleGun->SetParticlePosition(G4ThreeVector(x0, y0, z0));
+    }
+    else
+    {
+        // 非TT：如果你还想保留均匀圆束，则在这里写；否则不需要改
+        // （你原来的 fBeamRadius 圆束采样可以留着）
+        if (fBeamRadius > 0.)
+        {
+            G4double r   = fBeamRadius * std::sqrt(G4UniformRand());
+            G4double phi = CLHEP::twopi * G4UniformRand();
+            G4ThreeVector center = fParticleGun->GetParticlePosition();
+            fParticleGun->SetParticlePosition(
+                G4ThreeVector(r * std::cos(phi), r * std::sin(phi), center.z()));
+        }
     }
 
     fParticleGun->GeneratePrimaryVertex(event);
 
-    // 通知 Run 记录初级粒子信息（供 EndOfRun 打印）
     Run* run = static_cast<Run*>(
         G4RunManager::GetRunManager()->GetNonConstCurrentRun());
     if (run)
         run->SetPrimary(fParticleGun->GetParticleDefinition(),
                         fParticleGun->GetParticleEnergy());
 }
-
