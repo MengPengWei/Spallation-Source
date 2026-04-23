@@ -15,10 +15,10 @@ constexpr G4double C_World_Z = 10.0*m;
 
 
 //bool 开关
-constexpr G4bool is_AF = false; // 是否构建活化片胶囊组件
-constexpr G4bool is_FC = false; // 是否构建裂变室组件
-constexpr G4bool is_CSS = false; // 是否构建CSS组件
-constexpr G4bool is_TT = true; // 是否构建钽靶组件
+constexpr G4bool C_Is_AF = false; // 是否构建活化片胶囊组件
+constexpr G4bool C_Is_FC = false; // 是否构建裂变室组件
+constexpr G4bool C_Is_CSS = false; // 是否构建CSS组件
+constexpr G4bool C_Is_TT = true; // 是否构建钽靶组件
 
 
 //各组件位置

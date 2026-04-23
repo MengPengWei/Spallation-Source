@@ -9,10 +9,10 @@
 /run/initialize
 
 # 中子源：沿 +Z 方向，从胶囊前方 40 mm 处出发
-/gun/particle neutron
-/gun/energy 1 MeV
-/gun/position 0 0 -40 mm
-/gun/direction 0 0 1
+#/gun/particle neutron
+#/gun/energy 1 MeV
+#/gun/position 0 0 -40 mm
+#/gun/direction 0 0 1
 
 /run/verbose 1
 /event/verbose 0

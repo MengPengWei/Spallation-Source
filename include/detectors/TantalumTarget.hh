@@ -29,6 +29,7 @@ public:
     G4LogicalVolume* Build(G4LogicalVolume* motherLV, const G4ThreeVector& pos);
 
     // 访问各层逻辑体（Build 之后有效）
+    G4LogicalVolume* Get_TT_LV() const { return TT_LV; }
     G4LogicalVolume* Get_Target1_LV() const { return TT_Target1_LV; }
     G4LogicalVolume* Get_Target2_LV() const { return TT_Target2_LV; }
     G4LogicalVolume* Get_Water_LV() const { return TT_Water_LV; }

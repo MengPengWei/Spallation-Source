@@ -4,6 +4,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4Types.hh"
+#include "ProtonGun.hh"
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -15,6 +16,8 @@ public:
 
 private:
     G4ParticleGun* fParticleGun;
+    ProtonGun* fProtonGun;
+    
 
     /// 均匀圆形束流半径（mm）。
     /// > 0 时在 GeneratePrimaries 中对 (x,y) 做均匀圆面采样；
