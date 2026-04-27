@@ -101,7 +101,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         if(PG_Is_ProtonGun)//如果质子束流打开，进行束流探测器和靶表面中子探测器构建
         {
             //获取质子枪位置信息，根据粒子枪位置，确定探测器位置
-            ProtonGun tempPG;//创建一个临时的ProtonGun对象，用于获取质子枪的位置信息
+            ProtonGun tempPG(nullptr);//创建一个临时的ProtonGun对象（nullptr 安全），用于获取质子枪的位置常量
             G4double SD_Z_N=C_TT_Pos.z()+TT_BD.Get_TT_LV()->GetSolid()->GetZHalfLength()+5*cm;//探测器放置在靶表面上方5cm处
             G4double SD_Z_P=tempPG.GetCenterZ()+1*cm;//质子枪位置的Z坐标上1cm处
             G4double SD_X=tempPG.GetCenterX();
@@ -109,9 +109,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             G4double SD_MaxRel=tempPG.GetMaxRel();
             SourceDetector SD_BD_Proton;//创建两个SourceDetector对象，分别用于构建质子束流探测器和靶表面中子探测器
             SourceDetector SD_BD_Neutron;
-            SD_BD_Proton.Build(LV_World, G4ThreeVector(SD_X,SD_Y,SD_Z_P), "Proton");//位于质子枪前
-            SD_BD_Neutron.Build(LV_World, G4ThreeVector(SD_X,SD_Y,SD_Z_N), "Neutron");//在世界逻辑体中构建探测器，位置根据质子枪位置和靶表面位置确定
+            LV_ProtonDet  = SD_BD_Proton.Build(LV_World, G4ThreeVector(SD_X,SD_Y,SD_Z_P), "Proton");//位于质子枪前
+            LV_NeutronDet = SD_BD_Neutron.Build(LV_World, G4ThreeVector(SD_X,SD_Y,SD_Z_N), "Neutron");//在世界逻辑体中构建探测器，位置根据质子枪位置和靶表面位置确定
         }
+    }// closes if(C_Is_TT)
 
     return PV_World;
-}
+}// closes Construct()

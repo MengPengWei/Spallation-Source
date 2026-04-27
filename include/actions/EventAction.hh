@@ -32,8 +32,18 @@ public:
     void AddCapture(G4int copyNo);
     void AddEdep(G4int copyNo, G4double de);
 
-private:
+    // ---- Source detector accumulators (called by SteppingAction) ----
+    /// 质子探测器：每记录一步质子时调用（同时累加能量沉积）
+    void AddProtonStep(G4double edep_MeV);
+    /// 中子探测器：中子首次进入（边界步）时调用
+    void AddNeutronEntry();
 
+private:
+    // 质子探测器每事件统计
+    G4int    fNProtonSteps   = 0;   // 质子步数
+    G4double fProtonEdep_MeV = 0.;  // 质子能量沉积 (MeV)
+    // 中子探测器每事件统计
+    G4int    fNNeutronEntries = 0;  // 中子进入次数
 };
 
 #endif
