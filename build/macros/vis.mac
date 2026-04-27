@@ -1,0 +1,31 @@
+/control/verbose 0
+/run/verbose 0
+/run/initialize
+
+/vis/open OGLSQt
+/vis/verbose warnings
+/vis/viewer/set/autoRefresh false
+
+/vis/drawVolume
+/vis/geometry/set/visibility World 0 false
+
+# ✅ 正确坐标轴（无报错、加粗、明显）
+/vis/scene/add/axes 0 0 0 1 m
+
+# 固定视角
+/vis/viewer/set/style c
+/vis/viewer/set/upVector 0 0 1
+/vis/viewer/set/viewpointThetaPhi 60 45
+/vis/viewer/zoom 1.4
+
+# 轨迹
+/vis/scene/add/trajectories smooth
+/vis/modeling/trajectories/create/drawByParticleID
+/vis/modeling/trajectories/drawByParticleID-0/set e- red
+/vis/modeling/trajectories/drawByParticleID-0/set gamma green
+/vis/modeling/trajectories/drawByParticleID-0/set neutron yellow
+/vis/modeling/trajectories/drawByParticleID-0/set alpha blue
+/vis/modeling/trajectories/drawByParticleID-0/set GenericIon blue
+
+/vis/viewer/set/autoRefresh true
+/vis/viewer/flush

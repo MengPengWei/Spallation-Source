@@ -1,0 +1,21 @@
+# run.mac – 活化片中子照射运行宏
+# 产生热中子（1 MeV）沿 +Z 方向照射胶囊内的 3 个铟样品。
+# 输出 ROOT 文件 activation_output.root，包含 4 个 ntuple：
+#   NeutronEntry      – 中子穿入样品时的运动学量
+#   NeutronInteraction – 样品内中子物理过程步骤
+#   Secondary         – 次级粒子信息
+#   EventSummary      – 每事件每样品统计汇总
+
+/run/initialize
+
+# 中子源：沿 +Z 方向，从胶囊前方 40 mm 处出发
+#/gun/particle neutron
+#/gun/energy 1 MeV
+#/gun/position 0 0 -40 mm
+#/gun/direction 0 0 1
+
+/run/verbose 1
+/event/verbose 0
+
+# 发射 1000 个初级中子
+/run/beamOn 1000

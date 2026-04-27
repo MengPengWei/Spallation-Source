@@ -28,4 +28,6 @@ private:
     G4PVPlacement* SD_PV = nullptr;
     G4Tubs* SD_SV = nullptr;
 
-}
+};
+
+#endif // SOURCEDETECTOR_HH
