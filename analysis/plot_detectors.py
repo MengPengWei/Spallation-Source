@@ -48,7 +48,7 @@ def get_object(f: ROOT.TFile, name: str):
     obj = f.Get(name)
     if not obj:
         return None
-    obj.SetDirectory(ROOT.nullptr)   # 脱离文件所有权，文件关闭后仍可用
+    obj.SetDirectory(0)   # 0 = 脱离文件所有权（等同于 nullptr），文件关闭后仍可用
     return obj
 
 
@@ -70,7 +70,7 @@ def plot_proton_3d(f: ROOT.TFile, outdir: str) -> None:
                         25, -60., 60.,
                         25, -270., -160.,
                         20, -97., -83.)
-        h3.SetDirectory(ROOT.nullptr)
+        h3.SetDirectory(0)
         tree.Draw("z_mm:y_mm:x_mm>>hProton3D_dyn", "", "goff")
         print(f"[plot_detectors] Built hProton3D from ntuple "
               f"({h3.GetEntries():.0f} entries).")
@@ -124,7 +124,7 @@ def plot_neutron_yield_2d(f: ROOT.TFile, outdir: str) -> None:
                         "Neutron yield map;x (mm);y (mm)",
                         50, -60., 60.,
                         50, -270., -160.)
-        h2.SetDirectory(ROOT.nullptr)
+        h2.SetDirectory(0)
         tree.Draw("y_mm:x_mm>>hNeutronYield2D_dyn", "", "goff")
         print(f"[plot_detectors] Built hNeutronYield2D from ntuple "
               f"({h2.GetEntries():.0f} entries).")
@@ -159,7 +159,7 @@ def plot_neutron_spectrum(f: ROOT.TFile, outdir: str) -> None:
                         "Neutron energy spectrum;"
                         "E_{kin} (MeV);Counts",
                         200, 0., 100.)
-        h1.SetDirectory(ROOT.nullptr)
+        h1.SetDirectory(0)
         tree.Draw("Ekin_MeV>>hNeutronSpectrum_dyn", "", "goff")
         print(f"[plot_detectors] Built hNeutronSpectrum from ntuple "
               f"({h1.GetEntries():.0f} entries).")
