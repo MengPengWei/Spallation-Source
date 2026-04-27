@@ -72,14 +72,13 @@ const G4ThreeVector C_CSS_Shield_Pos     (0, 0, 0);
 //可视化
 namespace CSS_Vis
 {
-    inline static G4VisAttributes* C_CSS_Vis = new G4VisAttributes(G4Colour(0.0, 0, 0.0, 1)); // CSS系统设置为黑色
-    inline static G4VisAttributes* C_CSS_BGO_Vis = new G4VisAttributes(G4Colour(0.0, 1.0, 0.0, 1.0)); // BGO探测器设置为绿色
-    inline static G4VisAttributes* C_CSS_Al_Vis = new G4VisAttributes(G4Colour(1.0, 0.0, 0.0, 1.0)); // 铝层设置为红色
-    inline static G4VisAttributes* C_CSS_HPGe_Vis = new G4VisAttributes(G4Colour(0.0, 0.0, 1.0, 1.0)); // HPGe探测器设置为蓝色
-    inline static G4VisAttributes* C_CSS_Shield_Vis = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 1.0)); // 屏蔽体设置为灰色
-    inline static G4VisAttributes* C_CSS_Collimator_Vis = new G4VisAttributes(G4Colour(1.0, 1.0, 0.0, 1.0)); // 准直器设置为黄色
-} 
-using namespace CSS_Vis;
+    inline static G4VisAttributes C_CSS_Vis(G4Colour(0.0, 0.0, 0.0, 1.0)); // CSS系统设置为黑色
+    inline static G4VisAttributes C_CSS_BGO_Vis(G4Colour(0.0, 1.0, 0.0, 1.0)); // BGO探测器设置为绿色
+    inline static G4VisAttributes C_CSS_Al_Vis(G4Colour(1.0, 0.0, 0.0, 1.0)); // 铝层设置为红色
+    inline static G4VisAttributes C_CSS_HPGe_Vis(G4Colour(0.0, 0.0, 1.0, 1.0)); // HPGe探测器设置为蓝色
+    inline static G4VisAttributes C_CSS_Shield_Vis(G4Colour(0.5, 0.5, 0.5, 1.0)); // 屏蔽体设置为灰色
+    inline static G4VisAttributes C_CSS_Collimator_Vis(G4Colour(1.0, 1.0, 0.0, 1.0)); // 准直器设置为黄色
+}
     
 
 #endif
