@@ -19,6 +19,13 @@ G4Run* RunAction::GenerateRun()
 void RunAction::BeginOfRunAction(const G4Run*)
 {
     auto man = G4RootAnalysisManager::Instance();
+
+    // 在多线程 (MT) 模式下，开启 ntuple 合并：各 worker 线程的数据将在
+    // EndOfRun 时由 master 线程合并，最终只生成一个 activation_output.root，
+    // 而不是每个线程各自产生 activation_output_t*.root。
+    // 直方图 (H1/H2/H3) 在 Geant4 MT 下默认已合并；ntuple 需显式开启。
+    man->SetNtupleMerging(true);
+
     man->SetFileName("activation_output");
     man->OpenFile();
 
