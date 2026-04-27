@@ -22,6 +22,9 @@ public:
     /// Valid only after Construct() has been called.
     G4LogicalVolume* Get_LV_Detector() const { return LV_Detector; }
     G4LogicalVolume* Get_LV_World() const { return LV_World; }
+    /// Source-detector logical volumes (valid after Construct()).
+    G4LogicalVolume* Get_LV_ProtonDet()  const { return LV_ProtonDet; }
+    G4LogicalVolume* Get_LV_NeutronDet() const { return LV_NeutronDet; }
 
     G4Material* Mat_World;
     G4VPhysicalVolume* PV_World;
@@ -29,6 +32,9 @@ public:
     G4Box* SV_World;
 
     G4LogicalVolume* LV_Detector = nullptr;
+    /// 两个 source 探测器的逻辑体指针（Construct() 后有效）
+    G4LogicalVolume* LV_ProtonDet  = nullptr;
+    G4LogicalVolume* LV_NeutronDet = nullptr;
 
 private:
     void DefineMaterials();

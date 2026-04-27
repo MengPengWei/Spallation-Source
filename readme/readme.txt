@@ -100,3 +100,97 @@ ActivationFoilScorer：获取目标信息
   三者不重叠。
 - is_TT=true 时束流自动切换为 70 MeV 质子；
   is_TT=false 时保持原有 1 MeV 中子束流，行为不变。
+
+================================================================================
+版本号 1.2.0  新增双 source 探测器粒子记录（step/track/event/run）+ ROOT 输出
+================================================================================
+
+一、新增功能概述
+----------------
+在 is_TT=true && PG_Is_ProtonGun=true 模式下，自动在钽靶组件两侧构建两个薄圆盘
+探测器（材料：空气，R=5 cm，厚度 10 mm），并记录粒子信息写入 ROOT 文件：
+
+  - 质子探测器（SD_LV_Proton）：位于质子枪上方 1 cm 处
+    * 记录质子的逐步位置、动能、能量沉积、动量（Ntuple ProtonDetStep）
+    * 运行时填充 TH3D 三维位置热力图 hProton3D
+
+  - 中子探测器（SD_LV_Neutron）：位于钽靶顶面上方 5 cm 处
+    * 记录中子的逐步位置、动能、动量（Ntuple NeutronDetStep）
+    * 运行时在中子首次进入时填充：
+        TH1D 动能谱  hNeutronSpectrum（200 bins, 0–100 MeV）
+        TH2D 产额热力图 hNeutronYield2D（x-y, 50×50 bins）
+
+  - 每事件汇总（Ntuple SourceDetEvent）：
+      eventId, nProtonSteps, nNeutronEntries, protonEdep_MeV
+
+二、生成的 ROOT 文件结构
+------------------------
+文件名：activation_output.root（与现有输出合并，位于构建目录）
+
+  TTrees（Ntuples）：
+    NeutronEntry       – 原有：中子进入样品
+    NeutronInteraction – 原有：样品内中子相互作用步骤
+    Secondary          – 原有：次级粒子
+    EventSummary       – 原有：每事件每样品汇总
+    ProtonDetStep      – 新增：质子探测器质子逐步信息
+    NeutronDetStep     – 新增：中子探测器中子逐步信息
+    SourceDetEvent     – 新增：每事件 source 探测器汇总
+
+  直方图：
+    hNeutronSpectrum   – 1D：中子动能谱（运行时填充）
+    hNeutronYield2D    – 2D：中子产额 x-y 热力图（运行时填充）
+    hProton3D          – 3D：质子位置热力图（运行时填充）
+
+三、如何运行
+------------
+步骤 1：确认编译开关（include/constants/Constants.hh）
+  constexpr G4bool C_Is_TT = true;
+
+  确认质子枪开关（include/gun/PgConstants.hh）
+  constexpr G4bool PG_Is_ProtonGun = true;
+
+步骤 2：重新编译
+  mkdir build && cd build
+  cmake .. && make -j$(nproc)
+
+步骤 3：运行模拟
+  ./SS_V0_1_1 -m macros/tantalum_proton.mac
+
+  运行后在构建目录生成 activation_output.root（或带线程后缀的分文件，
+  G4RootAnalysisManager 会自动合并）。
+
+四、分析脚本
+------------
+分析脚本位于 analysis/ 目录，从 ROOT 文件读取数据并保存图片：
+
+  C++ ROOT macro（推荐）：
+    cd build
+    root -l -q '../analysis/plot_detectors.C("activation_output.root")'
+
+  Python + PyROOT：
+    cd build
+    python3 ../analysis/plot_detectors.py activation_output.root
+
+  输出图片（保存在当前工作目录）：
+    proton_3D_heatmap.png   – 质子探测器内质子 3D 热力分布（三视图）
+    neutron_yield_2D.png    – 中子探测器内中子产额热力图（x-y）
+    neutron_spectrum.png    – 中子探测器内中子动能谱（对数纵轴）
+
+  前提：ROOT 已安装且已 source thisroot.sh，或 Geant4 构建时已启用 ROOT 支持。
+
+五、相关代码文件
+----------------
+  探测器几何：
+    src/detectors/SourceDetector.cc     – 逻辑体名称改为 "SD_LV_Proton"/"SD_LV_Neutron"
+    src/worldconstruction/DetectorConstruction.cc – 构建并保存 LV 指针
+
+  数据记录（step/track/event/run）：
+    src/actions/SteppingAction.cc       – 按 LV 名称识别探测器，填充 Ntuple+直方图
+    src/actions/EventAction.cc          – 每事件累加质子步数、中子进入次数
+    src/actions/TrackingAction.cc       – 统计钽靶内产生的次级粒子（Run 级别）
+    src/actions/RunAction.cc            – BeginOfRunAction 中定义新 Ntuple 和直方图
+
+  接口头文件：
+    include/worldconstruction/DetectorConstruction.hh – 新增 Get_LV_ProtonDet/NeutronDet
+    include/actions/EventAction.hh      – 新增 AddProtonStep/AddNeutronEntry
+
