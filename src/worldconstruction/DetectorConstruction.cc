@@ -106,7 +106,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             G4double SD_Z_P=tempPG.GetCenterZ()+1*cm;//质子枪位置的Z坐标上1cm处
             G4double SD_X=tempPG.GetCenterX();
             G4double SD_Y=tempPG.GetCenterY();
-            G4double SD_MaxRel=tempPG.GetMaxRel();
             SourceDetector SD_BD_Proton;//创建两个SourceDetector对象，分别用于构建质子束流探测器和靶表面中子探测器
             SourceDetector SD_BD_Neutron;
             LV_ProtonDet  = SD_BD_Proton.Build(LV_World, G4ThreeVector(SD_X,SD_Y,SD_Z_P), "Proton");//位于质子枪前

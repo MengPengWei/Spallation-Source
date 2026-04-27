@@ -9,6 +9,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Tubs.hh"
 #include "G4VisAttributes.hh"
+#include "ProtonGun.hh"
 class SourceDetector
 {
 public:
