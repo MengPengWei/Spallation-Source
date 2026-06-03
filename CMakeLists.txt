@@ -22,6 +22,7 @@ endforeach()
 
 # 全局 include
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/constants)
 
 # ======================================================
 # 🔴 自动收集所有 src/*/*.cc
