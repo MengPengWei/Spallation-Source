@@ -1,0 +1,24 @@
+# test1.i 中子源运行宏
+# 中子源参数：
+#   位置: (0, -0.1, 0) cm
+#   粒子: neutron
+#   能量: D2分布 (9.8e-6 到 67.682 MeV)
+#   强度: 2.0304e13 neutrons/s
+
+/control/verbose 2
+/run/verbose 2
+/event/verbose 0
+/tracking/verbose 0
+
+# 设置中子源参数
+/shield/gun/setDefault
+
+# 设置模拟参数
+/shield/doorOpen false
+/shield/hotcellWallThickness 120 cm
+
+# 初始化
+/run/initialize
+
+# 运行事件 (test1.i使用1e8，这里用较小的数做测试)
+/run/beamOn 1000000

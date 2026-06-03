@@ -34,10 +34,10 @@ void plot_detectors(const char* fname = "activation_output.root")
 
     gStyle->SetOptStat(0);
     gStyle->SetPalette(kBird);
-    gStyle->SetNumberContours(64);
+    gStyle->SetNumberContours(256); // Increase contour levels for smoother color gradation
 
     // =========================================================
-    // 1. 质子 3D 热力分布
+    // 1. 质子 3D 热力分布 (Increased binning for detail)
     // =========================================================
     TH3D* h3p = nullptr;
     f->GetObject("hProton3D", h3p);   // 先尝试预填充直方图
@@ -50,12 +50,13 @@ void plot_detectors(const char* fname = "activation_output.root")
             std::cerr << "[plot_detectors] WARNING: no hProton3D or ProtonDetStep. "
                          "Skipping proton plot.\n";
         } else {
+            // --- KEY CHANGE: Higher bin counts for better detail ---
             h3p = new TH3D("hProton3D_dyn",
                            "Proton 3D distribution;"
                            "x (mm);y (mm);z (mm)",
-                           25, -60., 60.,
-                           25, -270., -160.,
-                           20, -97., -83.);
+                           120, -60., 60.,   // x: 120 bins → 1 mm resolution
+                           220, -270., -160.,// y: 220 bins → 0.5 mm resolution
+                           70, -97., -83.);  // z: 70 bins → 0.2 mm resolution
             h3p->SetDirectory(nullptr);
             tProton->Draw("z_mm:y_mm:x_mm>>hProton3D_dyn", "", "goff");
             std::cout << "[plot_detectors] Built hProton3D from ntuple ("
@@ -74,16 +75,19 @@ void plot_detectors(const char* fname = "activation_output.root")
         TH2D* hXY = (TH2D*)h3p->Project3D("yx");
         hXY->SetTitle("Proton detector: x-y (beam view);x (mm);y (mm)");
         hXY->Draw("COLZ");
+        hXY->SetMinimum(0); // Optional: ensure color scale starts at 0
 
         c1->cd(2);
         TH2D* hXZ = (TH2D*)h3p->Project3D("zx");
         hXZ->SetTitle("Proton detector: x-z (side view);x (mm);z (mm)");
         hXZ->Draw("COLZ");
+        hXZ->SetMinimum(0);
 
         c1->cd(3);
         TH2D* hYZ = (TH2D*)h3p->Project3D("zy");
         hYZ->SetTitle("Proton detector: y-z (front view);y (mm);z (mm)");
         hYZ->Draw("COLZ");
+        hYZ->SetMinimum(0);
 
         c1->SaveAs("proton_3D_heatmap.png");
         std::cout << "[plot_detectors] Saved: proton_3D_heatmap.png\n";
@@ -93,7 +97,7 @@ void plot_detectors(const char* fname = "activation_output.root")
     }
 
     // =========================================================
-    // 2. 中子产额热力图（x-y）
+    // 2. 中子产额热力图（x-y） (Increased binning)
     // =========================================================
     TH2D* h2n = nullptr;
     f->GetObject("hNeutronYield2D", h2n);
@@ -105,10 +109,11 @@ void plot_detectors(const char* fname = "activation_output.root")
             std::cerr << "[plot_detectors] WARNING: no hNeutronYield2D or "
                          "NeutronDetStep. Skipping neutron yield plot.\n";
         } else {
+            // --- KEY CHANGE: Higher bin counts ---
             h2n = new TH2D("hNeutronYield2D_dyn",
                            "Neutron yield map;x (mm);y (mm)",
-                           50, -60., 60.,
-                           50, -270., -160.);
+                           120, -60., 60.,   // x: 120 bins → 1 mm resolution
+                           220, -270., -160.);// y: 220 bins → 0.5 mm resolution
             h2n->SetDirectory(nullptr);
             tNeutron->Draw("y_mm:x_mm>>hNeutronYield2D_dyn", "", "goff");
             std::cout << "[plot_detectors] Built hNeutronYield2D from ntuple ("
@@ -122,6 +127,7 @@ void plot_detectors(const char* fname = "activation_output.root")
     if (h2n && h2n->GetEntries() > 0) {
         TCanvas* c2 = new TCanvas("c2", "Neutron yield heatmap", 700, 600);
         h2n->Draw("COLZ");
+        h2n->SetMinimum(0);
         c2->SaveAs("neutron_yield_2D.png");
         std::cout << "[plot_detectors] Saved: neutron_yield_2D.png\n";
         delete c2;
@@ -130,7 +136,7 @@ void plot_detectors(const char* fname = "activation_output.root")
     }
 
     // =========================================================
-    // 3. 中子能谱
+    // 3. 中子能谱 (Improved binning for low-energy detail)
     // =========================================================
     TH1D* h1n = nullptr;
     f->GetObject("hNeutronSpectrum", h1n);
@@ -142,10 +148,11 @@ void plot_detectors(const char* fname = "activation_output.root")
             std::cerr << "[plot_detectors] WARNING: no hNeutronSpectrum or "
                          "NeutronDetStep. Skipping spectrum plot.\n";
         } else {
+            // --- KEY CHANGE: Higher bin count, especially good for low energies ---
             h1n = new TH1D("hNeutronSpectrum_dyn",
                            "Neutron energy spectrum;"
                            "E_{kin} (MeV);Counts",
-                           200, 0., 100.);
+                           500, 0., 100.); // 500 bins → 0.2 MeV resolution
             h1n->SetDirectory(nullptr);
             tNeutron2->Draw("Ekin_MeV>>hNeutronSpectrum_dyn", "", "goff");
             std::cout << "[plot_detectors] Built hNeutronSpectrum from ntuple ("

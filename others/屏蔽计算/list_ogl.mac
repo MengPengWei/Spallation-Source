@@ -1,0 +1,3 @@
+/run/initialize
+/vis/open OGLSX
+/control/manual /vis/ogl

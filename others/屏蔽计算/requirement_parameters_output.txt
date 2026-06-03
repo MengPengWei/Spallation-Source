@@ -1,0 +1,47 @@
+2026 shield requirement parameters output
+run_events=1000
+source_intensity_per_s=1.05238e+15
+irradiation_hours=1000
+door_open=false
+
+[1] Prompt external dose rate (Sv/h)
+probe,gamma,neutron,total
+shield_outer_30cm,0,0,0
+hotcell_outer_30cm,0,0,0
+channel_22_exit,0,0,0
+channel_23_exit,0,0,0
+channel_24_exit,0,0,0
+door_operation_point,0,0,0
+shield_outer_limit_100mSv_h_pass=yes
+hotcell_outer_limit_2.5uSv_h_pass=yes
+
+[2] Waste target dose after 1000h irradiation
+status=need residual waste-target scenario (not isolated in current geometry)
+
+[3] External dose with waste target inside shield
+status=need residual scenario + shielding activation coupling
+
+[4] Door-open dose with waste target inside shield
+door_operation_point_total_Sv_h=0
+status=run with /shield/doorOpen true for required door-open condition
+
+[5] Activation dose by each layer at cooling times
+status=nuclide inventory exported in nuclide_inventory.csv (EOB,1d,30d,1y,5y)
+
+[6] Primary cooling water source term and dose
+top_water_nuclide_1y=none
+
+[7] Shield internal radiation thermal power
+total_power_W=7.3417e+16
+
+[8] Three-waste nuclide source terms (top 1 at 1y)
+solid_top_1y=Fe55,activity_Bq=4.18035e+11
+gas_top_1y=C14,activity_Bq=1.45971e+07
+liquid_top_1y=none,activity_Bq=0
+
+[9] Hotcell source term for civil wall design
+hotcell_outer_30cm_total_Sv_h=0
+status=combine with spectra in probe_spectra.csv for civil shielding design
+
+[10] Recommended hotcell wall thickness
+recommendation=current wall thickness meets 2.5uSv/h target

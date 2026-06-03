@@ -1,0 +1,7 @@
+probe,gamma_dose_Sv_per_h,neutron_dose_Sv_per_h,total_dose_Sv_per_h
+shield_outer_30cm,0,0,0
+hotcell_outer_30cm,0,0,0
+channel_22_exit,0,0,0
+channel_23_exit,0,0,0
+channel_24_exit,0,0,0
+door_operation_point,0,0,0

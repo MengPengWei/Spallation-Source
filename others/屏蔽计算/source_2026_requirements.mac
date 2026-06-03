@@ -1,0 +1,23 @@
+/control/verbose 1
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+# ---- 2026屏蔽计算需求：工况参数 ----
+# 1) 质子能量：70 MeV（由 /shield/gun/setDefault 设定）
+# 2) 束流形状：圆形50 mm（半径25 mm）
+# 3) 年最大工作时长：1000 h
+# 4) 束流强度：默认采用 test2026.i 对应值，可按需要修改
+
+/shield/doorOpen false
+/shield/hotcellWallThickness 120 cm
+
+/shield/gun/setDefault
+/shield/gun/beamRadius 25 mm
+/shield/gun/sourceIntensity 1.05238e15
+/shield/gun/irradiationHours 1000
+
+/run/initialize
+
+# 快速试算事件数，正式计算时请提高（如 1e5~1e7）
+/run/beamOn 10000000

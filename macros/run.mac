@@ -18,4 +18,4 @@
 /event/verbose 0
 
 # 发射 1000 个初级中子
-/run/beamOn 1000
+/run/beamOn 10000000

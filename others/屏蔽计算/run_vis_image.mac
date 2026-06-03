@@ -1,0 +1,17 @@
+/control/verbose 1
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+/shield/doorOpen false
+/shield/hotcellWallThickness 120 cm
+/run/initialize
+
+/vis/open OGLSX
+/vis/drawVolume
+/vis/viewer/set/style surface
+/vis/viewer/set/viewpointThetaPhi 75 35
+/vis/viewer/zoom 1.6
+/vis/viewer/refresh
+/vis/ogl/set/exportFormat eps
+/vis/ogl/export shielding_view.eps

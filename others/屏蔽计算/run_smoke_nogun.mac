@@ -1,0 +1,11 @@
+/control/verbose 1
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+/shield/doorOpen false
+/shield/hotcellWallThickness 120 cm
+/run/initialize
+
+
+/run/beamOn 20

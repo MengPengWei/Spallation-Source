@@ -1,0 +1,15 @@
+/control/verbose 1
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+/shield/doorOpen false
+/shield/hotcellWallThickness 120 cm
+/run/initialize
+
+/shield/gun/setDefault
+/shield/gun/beamRadius 25 mm
+/shield/gun/sourceIntensity 1.05238e15
+/shield/gun/irradiationHours 1000
+
+/run/beamOn 20

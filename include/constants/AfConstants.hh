@@ -50,8 +50,8 @@ constexpr const char* C_AF_Cu_Name  = "AF_Cu";
 // --------------------------
 // 样品开关（三选一）
 // --------------------------
-constexpr G4bool is_AF_In = false;
-constexpr G4bool is_AF_Si = true;
+constexpr G4bool is_AF_In = true;
+constexpr G4bool is_AF_Si = false;
 constexpr G4bool is_AF_Cu = false;
 
 // --------------------------

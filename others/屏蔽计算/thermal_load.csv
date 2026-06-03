@@ -1,0 +1,11 @@
+region,edep_J_per_primary,power_W,energy_1000h_J
+World,0.000220945,2.32519e+11,8.37067e+17
+coolant_water,0.00109698,1.15444e+12,4.15597e+18
+foundation_concrete,0.179277,1.88668e+14,6.79203e+20
+notch_air,0.000118185,1.24376e+11,4.47753e+17
+shield_bpe,0.0617958,6.50326e+13,2.34117e+20
+shield_graphite,0.093086,9.79619e+13,3.52663e+20
+shield_iron_inner,68.1248,7.16932e+16,2.58095e+23
+shield_lead_inner,0.614458,6.46644e+14,2.32792e+21
+shield_lead_outer,0.00221992,2.3362e+12,8.41034e+18
+target_air_core,0.685768,7.21688e+14,2.59808e+21

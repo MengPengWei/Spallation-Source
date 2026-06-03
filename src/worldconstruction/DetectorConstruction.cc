@@ -102,7 +102,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         {
             //获取质子枪位置信息，根据粒子枪位置，确定探测器位置
             ProtonGun tempPG(nullptr);//创建一个临时的ProtonGun对象（nullptr 安全），用于获取质子枪的位置常量
-            G4double SD_Z_N=C_TT_Pos.z()+TT_BD.Get_TT_LV()->GetSolid()->GetZHalfLength()+5*cm;//探测器放置在靶表面上方5cm处
+            G4VSolid* solid = TT_LV->GetSolid();
+            G4Tubs* targetTubs = dynamic_cast<G4Tubs*>(solid);
+            G4double targetZHalf = targetTubs->GetZHalfLength();
+            G4double SD_Z_N=C_TT_Pos.z()+targetZHalf+5*cm;//探测器放置在靶表面上方5cm处
+
             G4double SD_Z_P=tempPG.GetCenterZ()+1*cm;//质子枪位置的Z坐标上1cm处
             G4double SD_X=tempPG.GetCenterX();
             G4double SD_Y=tempPG.GetCenterY();

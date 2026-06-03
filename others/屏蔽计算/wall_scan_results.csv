@@ -1,0 +1,10 @@
+wall_thickness_cm,gamma_dose_Sv_per_h,neutron_dose_Sv_per_h,total_dose_Sv_per_h
+80,0,0,0
+100,0,0,0
+120,0,0,0
+140,0,0,0
+160,0,0,0
+180,0,0,0
+200,0,0,0
+220,0,0,0
+240,0,0,0
