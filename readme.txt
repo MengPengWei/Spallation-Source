@@ -194,3 +194,48 @@ ActivationFoilScorer：获取目标信息
     include/worldconstruction/DetectorConstruction.hh – 新增 Get_LV_ProtonDet/NeutronDet
     include/actions/EventAction.hh      – 新增 AddProtonStep/AddNeutronEntry
 
+================================================================================
+版本号 1.3.0  新增 DT/DD 聚变源 + 第一壁/增殖包层 + 锂探测器
+================================================================================
+
+一、新增模块
+-----------
+1. DT/DD 聚变中子源
+   文件：
+     constants/FusionConstants.hh
+     include/gun/FusionNeutronGun.hh
+     src/gun/FusionNeutronGun.cc
+   说明：
+     - 通过 C_Is_FUSION 开关启用聚变工况
+     - C_FUSION_USE_DT=true 为 DT(14.1 MeV)，false 为 DD(2.45 MeV)
+     - 在球形源区内均匀采样中子起点，并各向同性发射
+
+2. 第一壁 + 增殖包层 + 产氚探测器
+   文件：
+     include/detectors/FusionBlanketSystem.hh
+     src/detectors/FusionBlanketSystem.cc
+     src/worldconstruction/DetectorConstruction.cc
+   说明：
+     - 构建圆柱结构：FirstWall(SS316) + Blanket(LiPb)
+     - 新增两类探测器：
+       TRIT_LV_LiGlass（锂玻璃）
+       TRIT_LV_LiDiamond（锂金刚石）
+
+3. 数据输出
+   文件：
+     src/actions/SteppingAction.cc
+     src/actions/EventAction.cc
+     src/actions/RunAction.cc
+   说明：
+     - Ntuple `TritiumDetStep`：记录两类锂探测器的中子入射步信息
+     - Ntuple `TritiumDetEvent`：记录每事件锂玻璃/锂金刚石入射次数
+
+二、运行方式
+-----------
+1. 打开 `constants/FusionConstants.hh`，设置：
+     constexpr G4bool C_Is_FUSION = true;
+2. 编译并运行：
+     mkdir build && cd build
+     cmake ..
+     make -j$(nproc)
+     ./SS_V0_1_1 -m macros/fusion_blanket_dt.mac

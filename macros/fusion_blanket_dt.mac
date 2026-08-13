@@ -1,0 +1,10 @@
+# Fusion DT/DD first-wall + breeding blanket + tritium detectors
+# Enable by setting `C_Is_FUSION = true` in /home/runner/work/Spallation-Source/Spallation-Source/constants/FusionConstants.hh
+
+/run/initialize
+
+/run/verbose 1
+/event/verbose 0
+
+# Quick sanity run
+/run/beamOn 1000

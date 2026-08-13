@@ -5,6 +5,7 @@
 #include "G4ParticleGun.hh"
 #include "G4Types.hh"
 #include "ProtonGun.hh"
+#include "FusionNeutronGun.hh"
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -17,6 +18,7 @@ public:
 private:
     G4ParticleGun* fParticleGun;
     ProtonGun* fProtonGun;
+    FusionNeutronGun* fFusionNeutronGun;
     
 
     /// 均匀圆形束流半径（mm）。

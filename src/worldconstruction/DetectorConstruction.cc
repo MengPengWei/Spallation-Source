@@ -8,8 +8,11 @@
 #include "ComptonSuppressionSystem.hh"
 #include "TantalumTarget.hh"
 #include "SourceDetector.hh"
+#include "FusionBlanketSystem.hh"
 #include "PgConstants.hh"
 #include "ProtonGun.hh"
+#include "FusionConstants.hh"
+#include "G4Exception.hh"
 
 // 构造函数
 DetectorConstruction::DetectorConstruction()
@@ -116,6 +119,22 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             LV_NeutronDet = SD_BD_Neutron.Build(LV_World, G4ThreeVector(SD_X,SD_Y,SD_Z_N), "Neutron");//在世界逻辑体中构建探测器，位置根据质子枪位置和靶表面位置确定
         }
     }// closes if(C_Is_TT)
+
+    if (C_Is_FUSION)
+    {
+        if (C_Is_TT)
+        {
+            G4Exception("DetectorConstruction::Construct",
+                        "FusionAndTTEnabled",
+                        JustWarning,
+                        "C_Is_FUSION=true and C_Is_TT=true at the same time; continuing to build fusion structure.");
+        }
+
+        FusionBlanketSystem fusionSystem;
+        fusionSystem.Build(LV_World, C_FUSION_Center);
+        LV_LiGlassDet = fusionSystem.GetLiGlassDetLV();
+        LV_LiDiamondDet = fusionSystem.GetLiDiamondDetLV();
+    }
 
     return PV_World;
 }// closes Construct()

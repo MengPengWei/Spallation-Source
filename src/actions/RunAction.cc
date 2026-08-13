@@ -168,6 +168,28 @@ void RunAction::BeginOfRunAction(const G4Run*)
                   25, -60., 60.,
                   25, -270., -160.,
                   20, -97., -83.);
+
+    // ------------------------------------------------------------------
+    // Ntuple 7 "TritiumDetStep": 锂玻璃/锂金刚石探测器中的中子记录
+    // ------------------------------------------------------------------
+    man->CreateNtuple("TritiumDetStep", "Neutron entries in lithium tritium detectors");
+    man->CreateNtupleIColumn("eventId");      // 0
+    man->CreateNtupleSColumn("detector");     // 1
+    man->CreateNtupleDColumn("Ekin_MeV");     // 2
+    man->CreateNtupleDColumn("x_mm");         // 3
+    man->CreateNtupleDColumn("y_mm");         // 4
+    man->CreateNtupleDColumn("z_mm");         // 5
+    man->CreateNtupleDColumn("edep_MeV");     // 6
+    man->FinishNtuple(7);
+
+    // ------------------------------------------------------------------
+    // Ntuple 8 "TritiumDetEvent": 每事件锂探测器进入计数
+    // ------------------------------------------------------------------
+    man->CreateNtuple("TritiumDetEvent", "Per-event lithium detector entries");
+    man->CreateNtupleIColumn("eventId");            // 0
+    man->CreateNtupleIColumn("nLiGlassEntries");    // 1
+    man->CreateNtupleIColumn("nLiDiamondEntries");  // 2
+    man->FinishNtuple(8);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -37,6 +37,8 @@ public:
     void AddProtonStep(G4double edep_MeV);
     /// 中子探测器：中子首次进入（边界步）时调用
     void AddNeutronEntry();
+    void AddLiGlassEntry();
+    void AddLiDiamondEntry();
 
 private:
     // 质子探测器每事件统计
@@ -44,6 +46,8 @@ private:
     G4double fProtonEdep_MeV = 0.;  // 质子能量沉积 (MeV)
     // 中子探测器每事件统计
     G4int    fNNeutronEntries = 0;  // 中子进入次数
+    G4int    fNLiGlassEntries = 0;  // 锂玻璃探测器中子进入次数
+    G4int    fNLiDiamondEntries = 0; // 锂金刚石探测器中子进入次数
 };
 
 #endif

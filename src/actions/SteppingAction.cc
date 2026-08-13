@@ -41,7 +41,9 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     // 快速排除：只关注两个 source 探测器逻辑体
     const bool inProtonDet  = (lvName == "SD_LV_Proton");
     const bool inNeutronDet = (lvName == "SD_LV_Neutron");
-    if (!inProtonDet && !inNeutronDet) return;
+    const bool inLiGlassDet = (lvName == "TRIT_LV_LiGlass");
+    const bool inLiDiamondDet = (lvName == "TRIT_LV_LiDiamond");
+    if (!inProtonDet && !inNeutronDet && !inLiGlassDet && !inLiDiamondDet) return;
 
     const G4String& partName =
         track->GetParticleDefinition()->GetParticleName();
@@ -121,5 +123,23 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
             fEvent->AddNeutronEntry();
         }
     }
-}
 
+    if ((inLiGlassDet || inLiDiamondDet) && partName == "neutron")
+    {
+        if (pre->GetStepStatus() == fGeomBoundary)
+        {
+            const G4String detName = inLiGlassDet ? "LiGlass" : "LiDiamond";
+            man->FillNtupleIColumn(7, 0, evtId);
+            man->FillNtupleSColumn(7, 1, detName);
+            man->FillNtupleDColumn(7, 2, Ekin_MeV);
+            man->FillNtupleDColumn(7, 3, x_mm);
+            man->FillNtupleDColumn(7, 4, y_mm);
+            man->FillNtupleDColumn(7, 5, z_mm);
+            man->FillNtupleDColumn(7, 6, edep_MeV);
+            man->AddNtupleRow(7);
+
+            if (inLiGlassDet) fEvent->AddLiGlassEntry();
+            if (inLiDiamondDet) fEvent->AddLiDiamondEntry();
+        }
+    }
+}

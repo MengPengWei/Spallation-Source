@@ -19,6 +19,8 @@ void EventAction::BeginOfEventAction(const G4Event*)
     fNProtonSteps    = 0;
     fProtonEdep_MeV  = 0.;
     fNNeutronEntries = 0;
+    fNLiGlassEntries = 0;
+    fNLiDiamondEntries = 0;
 }
 
 void EventAction::EndOfEventAction(const G4Event* event)
@@ -32,6 +34,11 @@ void EventAction::EndOfEventAction(const G4Event* event)
     man->FillNtupleIColumn(6, 2, fNNeutronEntries);
     man->FillNtupleDColumn(6, 3, fProtonEdep_MeV);
     man->AddNtupleRow(6);
+
+    man->FillNtupleIColumn(8, 0, evtId);
+    man->FillNtupleIColumn(8, 1, fNLiGlassEntries);
+    man->FillNtupleIColumn(8, 2, fNLiDiamondEntries);
+    man->AddNtupleRow(8);
 }
 
 void EventAction::AddEntry(G4int /*copyNo*/)
@@ -61,4 +68,14 @@ void EventAction::AddProtonStep(G4double edep_MeV)
 void EventAction::AddNeutronEntry()
 {
     ++fNNeutronEntries;
+}
+
+void EventAction::AddLiGlassEntry()
+{
+    ++fNLiGlassEntries;
+}
+
+void EventAction::AddLiDiamondEntry()
+{
+    ++fNLiDiamondEntries;
 }
